@@ -8,7 +8,6 @@ use App\Pagination\Paginator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use function Symfony\Component\String\u;
-
 use Symfony\Bundle\FrameworkBundle\Controller;
 use Symfony\Component\Serializer\Normalizer;
 use Symfony\Component\PropertyInfo\Extractor;
@@ -24,7 +23,7 @@ class GameRepository extends ServiceEntityRepository
     /**
      * @return Game[]
      */
-    public function getGames(int $page = 1): array //Paginator
+    public function getGames(): array
     {
         $content = file_get_contents('..\data\games.json');
         $games = json_decode($content, true);
@@ -55,10 +54,9 @@ class GameRepository extends ServiceEntityRepository
         return $gamesList;
     }
 
-    public function getGameById(int $gameId) : Game
+    public function getGameById(int $gameId, array $allGames) : Game
     {
         $gameFound = null;
-        $allGames = $this->getGames();
 
         foreach ($allGames as $game)
         {
@@ -74,7 +72,7 @@ class GameRepository extends ServiceEntityRepository
     /**
      * @return Game[]
      */
-    public function searchGamesByName(string $gameName) : array
+    public function searchGamesByName(string $gameName, array $allGames) : array
     {
         $gamesList = array();
 
@@ -84,8 +82,6 @@ class GameRepository extends ServiceEntityRepository
         }
         else
         {
-            $allGames = $this->getGames();
-
             foreach ($allGames as $game)
             {
                 if (strpos(strtolower($game->getName()), strtolower($gameName)) !== false)

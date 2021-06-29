@@ -13,24 +13,52 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Utils\Interfaces\CacheInterface;
 
 class GameController extends AbstractController
 {
     /**
-     * @Route("/", defaults={"page": "1", "_format"="html"}, methods="GET", name="lobby_index")
+     * @Route("/", defaults={"_format"="html"}, methods="GET", name="lobby_index")
      */
-    public function index(Request $request, int $page, GameRepository $games): Response
+    public function index(Request $request, GameRepository $games, CacheInterface $cache): Response
     {
-        $allGames = $games->getGames($page);
-        return $this->render('default/homepage.html.twig', ['games' => $allGames]);
+        $cache = $cache->cache;
+
+        $cachedGames = $cache->getItem("all_games");
+        $cachedGames->expiresAfter(1800);
+
+        if (!$cachedGames->isHit())
+        {
+            $allGames = $games->getGames();
+
+            $cachedGames->set($allGames);
+
+            $cache->save($cachedGames);
+        }
+
+        return $this->render('default/homepage.html.twig', ['games' => $cachedGames->get()]);
     }
 
     /**
      * @Route("/game/{gameId}", methods="GET", name="game_show")
      */
-    public function getGameById(int $gameId, GameRepository $games): Response
+    public function getGameById(int $gameId, GameRepository $games, CacheInterface $cache): Response
     {
-        $game = $games->getGameById($gameId);
+        $cache = $cache->cache;
+
+        $cachedGames = $cache->getItem("all_games");
+        $cachedGames->expiresAfter(1800);
+
+        if (!$cachedGames->isHit())
+        {
+            $allGames = $games->getGames($page);
+
+            $cachedGames->set($allGames);
+
+            $cache->save($cachedGames);
+        }
+
+        $game = $games->getGameById($gameId, $cachedGames->get());
 
         return $this->render('lobby/game_show.html.twig', ['game' => $game]);
     }
@@ -38,12 +66,25 @@ class GameController extends AbstractController
     /**
      * @Route("/games", methods="GET", name="games_search")
      */
-    //public function getGameById(Request $request): Response //Game $game
-    public function getGamesByName(Request $request, GameRepository $games): Response
+    public function getGamesByName(Request $request, GameRepository $games, CacheInterface $cache): Response
     {
         $gameName = $request->query->get('search_keyword');
 
-        $gamesFound = $games->searchGamesByName($gameName);
+        $cache = $cache->cache;
+
+        $cachedGames = $cache->getItem("all_games");
+        $cachedGames->expiresAfter(1800);
+
+        if (!$cachedGames->isHit())
+        {
+            $allGames = $games->getGames($page);
+
+            $cachedGames->set($allGames);
+
+            $cache->save($cachedGames);
+        }
+
+        $gamesFound = $games->searchGamesByName($gameName, $cachedGames->get());
 
         return $this->render('default/homepage.html.twig', ['games' => $gamesFound]);
     }
