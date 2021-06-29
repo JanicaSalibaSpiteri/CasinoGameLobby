@@ -5,6 +5,7 @@ services:
   php:
     container_name: php
     build:
+      context: ./
     ports:
       - '9000:9000'
     volumes:
