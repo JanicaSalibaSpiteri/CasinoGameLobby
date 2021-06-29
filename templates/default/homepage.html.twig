@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'homepage' %}
+
+{% block main %}
+
+    <form action="{{ path('games_search') }}" method="get">
+        <div class="form-group">
+            <input name="search_keyword"
+                   class="form-control search-field"
+                   placeholder="Search games by Name"
+                   autocomplete="off"
+                   value=""
+                   autofocus
+                   data-no-results-message="No results found"
+            >
+        </div>
+    </form>
+
+    {% for row in games|batch(4) %}
+    <div class="row">
+        {% for game in row %}
+        <lobby class="game">
+            <div class="col-xs-3">
+                <img src="{{ game.image }}" onerror="this.src='no-image.png'" alt="Logo" class="rounded img-thumbnail">
+
+                <h4>
+                    <a href="{{ path('game_show', {gameId: game.id}) }}">
+                        {{ game.name }}
+                    </a>
+                </h4>
+
+                <p class="game-metadata">
+                    <span class="metadata">{{ game.provider }}</span>
+                </p>
+            </div>
+        </lobby>
+        {% endfor %}
+    </div>
+    {% else %}
+        <div class="well">No games found</div>
+    {% endfor %}
+{% endblock %}

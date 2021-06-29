@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'lobby_game_show' %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-6 col-md-6">
+            <img src="{{ game.image }}" alt="Logo" class="rounded img-thumbnail">
+        </div>
+
+        <div class="col-6 col-md-6">
+            <h1>{{ game.name }}</h1>
+
+            <p class="game-metadata">
+                <span class="metadata">{{ game.provider }}</span>
+            </p>
+
+            {{ include('lobby/_game_categories.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

@@ -41,6 +41,7 @@
 
 # Build data
 /build/
+/public/build/
 
 # Composer PHAR
 /composer.phar
@@ -50,3 +51,6 @@
 
 # Embedded web-server pid file
 /.web-server-pid
+
+node_modules
+

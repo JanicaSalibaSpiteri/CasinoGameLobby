@@ -1,0 +1,9 @@
+{% if not game.categories.empty %}
+    <div class="game-categories">
+        {% for category in game.categories %}
+            <p class="label label-default m-l-5">
+                <i class="fa fa-tag"></i> {{ category.name }}
+            </p>
+        {% endfor %}
+    </div>
+{% endif %}
