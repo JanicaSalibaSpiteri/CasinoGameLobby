@@ -5,7 +5,7 @@
 {% block main %}
     <div class="row">
         <div class="col-6 col-md-6">
-            <img src="{{ game.image }}" alt="Logo" class="rounded img-thumbnail">
+            <img src="{{ game.image }}" onerror="this.src='../no-image.png'" alt="Logo" class="rounded img-thumbnail">
         </div>
 
         <div class="col-6 col-md-6">
