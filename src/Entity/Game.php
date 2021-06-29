@@ -7,17 +7,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Repository\GameRepository;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\GameRepository")
- * @ORM\Table(name="casino_lobby_game")
- *
- * Defines the properties of the Game entity to represent the casino lobby games.
- *
- * See https://symfony.com/doc/current/doctrine.html#creating-an-entity-class
- *
- * Tip: if you have an existing database, you can generate these entity class automatically.
- * See https://symfony.com/doc/current/doctrine/reverse_engineering.html
+ * @ORM\Entity(repositoryClass=GameRepository::class)
+ * @ORM\Table(name="casino_games")
  */
 class Game
 {

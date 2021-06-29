@@ -52,5 +52,9 @@
 # Embedded web-server pid file
 /.web-server-pid
 
+# Packages
 node_modules
+
+# Migrations
+/migrations
 

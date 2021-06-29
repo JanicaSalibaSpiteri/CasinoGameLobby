@@ -6,11 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="casino_lobby_categories")
- *
- * Defines the properties of the Category entity to represent the game categories.
- *
- * See https://symfony.com/doc/current/doctrine.html#creating-an-entity-class
+ * @ORM\Table(name="casino_game_categories")
  */
 
 class Category
@@ -31,6 +27,14 @@ class Category
      */
     private $name;
 
+    /**
+     * @var Game
+     *
+     * @ORM\ManyToOne(targetEntity="Game", inversedBy="categories")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $game;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -49,5 +53,15 @@ class Category
     public function setName(?string $name): void
     {
         $this->name = $name;
+    }
+
+    public function getGame(): ?Game
+    {
+        return $this->game;
+    }
+
+    public function setGame(Game $game): void
+    {
+        $this->game = $game;
     }
 }
