@@ -93,4 +93,32 @@ class GameRepository extends ServiceEntityRepository
             return $gamesList;
         }
     }
+
+    /**
+     * @return Game[]
+     */
+    public function filterGamesByCategory(string $category, array $allGames) : array
+    {
+        $gamesList = array();
+
+        if ($category === "")
+        {
+            return $gamesList;
+        }
+        else
+        {
+            foreach ($allGames as $game)
+            {
+                foreach($game->getCategories() as $cat)
+                {
+                    if (strpos(strtolower($cat->getName()), strtolower($category)) !== false)
+                    {
+                        $gamesList[] = $game;
+                    }
+                }
+            }
+
+            return $gamesList;
+        }
+    }
 }

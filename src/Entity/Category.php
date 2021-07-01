@@ -3,9 +3,10 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CategoryRepository;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass=CategoryRepository::class)
  * @ORM\Table(name="casino_game_categories")
  */
 

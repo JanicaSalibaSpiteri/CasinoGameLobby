@@ -17,12 +17,32 @@
         </div>
     </form>
 
+    <form action="{{ path('games_filter') }}" method="get">
+        <div class="form-group row">
+            <label id="categorySelectLabel" for="categorySelect" class="col-sm-2 col-form-label mt-4">Filter by Category</label>
+            <div class="col-sm-9">
+                <select class="form-control form-select" id="categorySelect" name="category" autocomplete="category" >
+                    {% for cat in categories %}
+                    <option selected={{ cat.id }}>
+                        {{ cat.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-1">
+                <button class="btn btn-primary" type="submit">
+                    Filter
+                </button>
+            </div>
+        </div>
+    </form>
+
     {% for row in games|batch(4) %}
     <div class="row">
         {% for game in row %}
         <lobby class="game">
             <div class="col-xs-3">
-                <img src="{{ game.image }}" onerror="this.src='no-image.png'" alt="Logo" class="rounded img-thumbnail">
+                <img src="{{ game.image }}" onerror="this.src='../no-image.png'" alt="Logo" class="rounded img-thumbnail">
 
                 <h4>
                     <a href="{{ path('game_show', {gameId: game.id}) }}">
@@ -40,4 +60,5 @@
     {% else %}
         <div class="well">No games found</div>
     {% endfor %}
+
 {% endblock %}

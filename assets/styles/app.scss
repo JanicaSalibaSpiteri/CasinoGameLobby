@@ -99,8 +99,6 @@ header .locales a:hover small {
 
 .body-container {
   flex: 1;
-  /* needed to prevent pages with a very small height and browsers not supporting flex */
-  min-height: 600px
 }
 
 .body-container #main h1, .body-container #main h2 {
@@ -252,6 +250,11 @@ body#homepage lobby.game {
 body#homepage .game-metadata {
   font-size: 16px;
   margin-bottom: 8px;
+}
+
+body#homepage #main #categorySelectLabel {
+  padding: 10px;
+  padding-left: 20px;
 }
 
 /* Page: 'Lobby game show'
