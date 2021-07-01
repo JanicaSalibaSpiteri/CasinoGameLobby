@@ -16,6 +16,7 @@ Caching has been implemented for faster retrieval during the runtime of the appl
 
 ## Pre-requisities
 - PHP version 7.3.28
+- Symfony
 - Composer
 - Nodejs
 - Docker
