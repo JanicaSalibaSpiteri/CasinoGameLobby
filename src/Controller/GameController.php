@@ -23,6 +23,57 @@ class GameController extends AbstractController
      */
     public function index(Request $request, GameRepository $games, CategoryRepository $categories, CacheInterface $cache): Response
     {
+        $cachedGames = $this->getAllGames($games, $cache);
+        $cachedCats = $this->getAllCategories($categories, $cache);
+
+        return $this->render('default/homepage.html.twig', ['games' => $cachedGames, 'categories' => $cachedCats]);
+    }
+
+    /**
+     * @Route("/game/{gameId}", methods="GET", name="game_show")
+     */
+    public function getGameById(int $gameId, GameRepository $games, CacheInterface $cache): Response
+    {
+        $cachedGames = $this->getAllGames($games, $cache);
+        $game = $games->getGameById($gameId, $cachedGames);
+
+        return $this->render('lobby/game_show.html.twig', ['game' => $game]);
+    }
+
+    /**
+     * @Route("/games/search", methods="GET", name="games_search")
+     */
+    public function getGamesByName(Request $request, GameRepository $games, CategoryRepository $categories, CacheInterface $cache): Response
+    {
+        $gameName = $request->query->get('search_keyword');
+
+        $cachedGames = $this->getAllGames($games, $cache);
+        $gamesFound = $games->searchGamesByName($gameName, $cachedGames);
+
+        $cachedCats = $this->getAllCategories($categories, $cache);
+        return $this->render('default/homepage.html.twig', ['games' => $gamesFound, 'categories' => $cachedCats]);
+    }
+
+    /**
+     * @Route("/games/filter", methods="GET", name="games_filter")
+     */
+    public function filterGamesByCategory(Request $request, GameRepository $games, CategoryRepository $categories, CacheInterface $cache): Response
+    {
+        $category = $request->query->get('category');
+
+        $cachedGames = $this->getAllGames($games, $cache);
+        $gamesFound = $games->filterGamesByCategory($category, $cachedGames);
+
+        $cachedCats = $this->getAllCategories($categories, $cache);
+
+        return $this->render('default/homepage.html.twig', ['games' => $gamesFound, 'categories' => $cachedCats]);
+    }
+
+    /**
+     * @return Game[]
+     */
+    private function getAllGames(GameRepository $games, CacheInterface $cache): array
+    {
         $cache = $cache->cache;
 
         //Get games from cache
@@ -38,68 +89,15 @@ class GameController extends AbstractController
             $cache->save($cachedGames);
         }
 
-        //Get categories from cache
-        $cachedCats = $cache->getItem("all_categories");
-        $cachedCats->expiresAfter(1800);
-
-        if (!$cachedCats->isHit())
-        {
-            $allCategories = $categories->getCategories();
-
-            $cachedCats->set($allCategories);
-
-            $cache->save($cachedCats);
-        }
-
-        return $this->render('default/homepage.html.twig', ['games' => $cachedGames->get(), 'categories' => $cachedCats->get()]);
+        return $cachedGames->get();
     }
 
     /**
-     * @Route("/game/{gameId}", methods="GET", name="game_show")
+     * @return Category[]
      */
-    public function getGameById(int $gameId, GameRepository $games, CacheInterface $cache): Response
+    private function getAllCategories(CategoryRepository $categories, CacheInterface $cache): array
     {
         $cache = $cache->cache;
-
-        $cachedGames = $cache->getItem("all_games");
-        $cachedGames->expiresAfter(1800);
-
-        if (!$cachedGames->isHit())
-        {
-            $allGames = $games->getGames();
-
-            $cachedGames->set($allGames);
-
-            $cache->save($cachedGames);
-        }
-
-        $game = $games->getGameById($gameId, $cachedGames->get());
-
-        return $this->render('lobby/game_show.html.twig', ['game' => $game]);
-    }
-
-    /**
-     * @Route("/games/search", methods="GET", name="games_search")
-     */
-    public function getGamesByName(Request $request, GameRepository $games, CacheInterface $cache): Response
-    {
-        $gameName = $request->query->get('search_keyword');
-
-        $cache = $cache->cache;
-
-        $cachedGames = $cache->getItem("all_games");
-        $cachedGames->expiresAfter(1800);
-
-        if (!$cachedGames->isHit())
-        {
-            $allGames = $games->getGames();
-
-            $cachedGames->set($allGames);
-
-            $cache->save($cachedGames);
-        }
-
-        $gamesFound = $games->searchGamesByName($gameName, $cachedGames->get());
 
         //Get categories from cache
         $cachedCats = $cache->getItem("all_categories");
@@ -114,47 +112,6 @@ class GameController extends AbstractController
             $cache->save($cachedCats);
         }
 
-        return $this->render('default/homepage.html.twig', ['games' => $gamesFound, 'categories' => $cachedCats->get()]);
-    }
-
-    /**
-     * @Route("/games/filter", methods="GET", name="games_filter")
-     */
-    public function filterGamesByCategory(Request $request, GameRepository $games, CacheInterface $cache): Response
-    {
-        $category = $request->query->get('category');
-        echo "<script>console.log('Debug Objects: " . $category . "' );</script>";
-
-        $cache = $cache->cache;
-
-        $cachedGames = $cache->getItem("all_games");
-        $cachedGames->expiresAfter(1800);
-
-        if (!$cachedGames->isHit())
-        {
-            $allGames = $games->getGames();
-
-            $cachedGames->set($allGames);
-
-            $cache->save($cachedGames);
-        }
-
-        $gamesFound = $games->filterGamesByCategory($category, $cachedGames->get());
-
-        //Get categories from cache
-        $cachedCats = $cache->getItem("all_categories");
-        $cachedCats->expiresAfter(1800);
-
-        if (!$cachedCats->isHit())
-        {
-            $allCategories = $categories->getCategories();
-
-            $cachedCats->set($allCategories);
-
-            $cache->save($cachedCats);
-        }
-
-        return $this->render('default/homepage.html.twig', ['games' => $gamesFound, 'categories' => $cachedCats->get()]);
-    }
+        return $cachedCats->get();
     }
 }
