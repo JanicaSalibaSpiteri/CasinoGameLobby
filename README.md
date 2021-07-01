@@ -14,6 +14,12 @@ Caching has been implemented for faster retrieval during the runtime of the appl
 - The entire application has been **Dockerized**
 - Doctrine migrations can be generated and executed so that the necessary DB entities are created in the DB.
 
+## Pre-requisities
+- PHP version 7.3.28
+- Composer
+- Nodejs
+- Docker
+
 ## Installation
 1.  Download the project
 2.  In the root folder run the following commands:
