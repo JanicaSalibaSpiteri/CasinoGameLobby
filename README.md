@@ -31,5 +31,5 @@ Caching has been implemented for faster retrieval during the runtime of the appl
 
 ## Running the Doctrine migrations
 The Doctrine migrations can be run through the following commands (after hosting on Docker):
-  `symfony console make:migration`
-  `symfony console doctrine:migrations:migrate`
+- `symfony console make:migration`
+- `symfony console doctrine:migrations:migrate`
